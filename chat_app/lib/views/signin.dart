@@ -34,16 +34,18 @@ class _SignInState extends State<SignIn> {
 
       HelperFunctions.saveUserEmailSharedPreference(emailTextEditingController.text);
       //HelperFunctions.saveUserNameSharedPreference(userNameTextEditingController.text);
+
+      databaseMethods.getUserByUserEmail(emailTextEditingController.text)
+          .then((val){
+        snapshotUserInfo = val;
+        HelperFunctions.saveUserNameSharedPreference(snapshotUserInfo.documents[0].data["name"]);
+        //print("${snapshotUserInfo.documents[0].data["name"]} this is not good");
+      });
+
+
       setState(() {
         isLoading = true;
       });
-
-      databaseMethods.getUserByUserEmail(emailTextEditingController.text)
-      .then((val){
-        snapshotUserInfo = val;
-        HelperFunctions.saveUserEmailSharedPreference(snapshotUserInfo.documents[0].data["name"]);
-      });
-
       authMethods.signInWithEmailAndPassword(emailTextEditingController.text, passwordTextEditingController.text)
       .then((val){
         if(val != null){

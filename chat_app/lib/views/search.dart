@@ -1,4 +1,5 @@
 import 'package:chat_app/helper/constants.dart';
+import 'package:chat_app/helper/helperfunctions.dart';
 import 'package:chat_app/services/database.dart';
 import 'package:chat_app/views/conversation_screen.dart';
 import 'package:chat_app/widgets/widgets.dart';
@@ -11,12 +12,16 @@ class SearchScreen extends StatefulWidget {
   _SearchScreenState createState() => _SearchScreenState();
 }
 
+String _myName;
+
 class _SearchScreenState extends State<SearchScreen> {
 
   DatabaseMethods databaseMethods = new DatabaseMethods();
   TextEditingController searchTextEditingController =  new TextEditingController();
 
   QuerySnapshot searchSnapshot;
+
+
 
   Widget searchList(){
     return searchSnapshot != null ? ListView.builder(
@@ -41,16 +46,20 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   createChatroomAndStartConversation({String userName}){
-    String chatRoomId = getChatRoomId(userName, Constants.myName);
-    List<String> users = [userName, Constants.myName];
-    Map<String, dynamic> charRoomMap = {
-      "users" : users,
-      "chatroomId" : chatRoomId
-    };
-    DatabaseMethods().createChatRoom(chatRoomId, charRoomMap);
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) => ConversationScreen()
-    ));
+    if(userName != Constants.myName){
+      String chatRoomId = getChatRoomId(userName, Constants.myName);
+      List<String> users = [userName, Constants.myName];
+      Map<String, dynamic> charRoomMap = {
+        "users" : users,
+        "chatroomId" : chatRoomId
+      };
+      DatabaseMethods().createChatRoom(chatRoomId, charRoomMap);
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => ConversationScreen(chatRoomId)
+      ));
+    }else{
+      print("You can't send message to yourself");
+    }
   }
 
   Widget SearchTile({String userName, String userEmail}){
@@ -90,6 +99,7 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
