@@ -3,10 +3,12 @@ import 'package:chat_app/services/auth.dart';
 import 'package:chat_app/services/database.dart';
 import 'package:chat_app/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'chatRoomsScreen.dart';
+import 'googleChatRoomsScreen.dart';
 
 class SignIn extends StatefulWidget {
 
@@ -59,6 +61,45 @@ class _SignInState extends State<SignIn> {
 
 
     }
+  }
+
+  FirebaseUser user;
+
+  /*void click(){
+    authMethods.signInWithGoogle().then((FirebaseUser user){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoom()));
+    });
+
+  }*/
+
+  Widget googleLoginButton(){
+    return OutlineButton(
+      onPressed: (){
+        authMethods.signInWithGoogle().then((result) {
+          if (result != null) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return GoogleChatRoom();
+                },
+              ),
+            );
+          }
+        });
+      },
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(45)),
+      splashColor: Colors.grey,
+      borderSide: BorderSide(color: Colors.grey),
+      child: Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Image(image: AssetImage('assets/images/google_logo.png'), height: 35,),
+          Padding(padding: EdgeInsets.only(left: 10), child: Text("Sign in with Google", style: mediumTextStyle(),),)
+        ],
+      )),
+    );
   }
 
   @override
@@ -130,18 +171,13 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
                 SizedBox(height: 16,),
-                Container(
-                  alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30)
+                GestureDetector(
+                  onTap: (){
+
+                  },
+                  child: Container(
+                    child: googleLoginButton(),
                   ),
-                  child: Text("Sign In with Google", style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 17,
-                  ),),
                 ),
                 SizedBox(height: 16,),
                 Row(
